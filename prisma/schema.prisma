@@ -1,14 +1,107 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql" // Ou "mysql", dependendo do seu banco
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  address      String?
+  date_birth   DateTime
+  email        String   @unique
+  password     String
+  role         Role
+  phone_number String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  services     Service[]  @relation("UserServices")
+  comments     Comments[]
+  ratings      Rating[]
+ 
+ 
+  @@map("users")
+}
+
+model Freelancer {
+  id             String        @id @default(uuid())
+  name           String
+  address        String?
+  date_birth     DateTime
+  email          String        @unique
+  password       String
+  phone_number   String
+  workCategory   WorkCategory  @relation(fields: [work_id], references: [id])
+  work_id        String
+  link_portfolio String?
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  services       Service[]     @relation("FreelancerServices")
+
+  @@map("freelancers")
+}
+
+model WorkCategory {
+  id          String       @id @default(uuid())
+  name        String
+  freelancers Freelancer[]
+
+  @@map("work_categories")
+}
+
+model Service {
+  id            String      @id @default(uuid())
+  user          User        @relation("UserServices", fields: [user_id], references: [id])
+  user_id       String
+  freelancer    Freelancer  @relation("FreelancerServices", fields: [freelancer_id], references: [id])
+  freelancer_id String
+  status        ServiceStatus
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  comments      Comments[]
+  ratings       Rating[]
+
+  @@map("services")
+  @@unique([user_id, freelancer_id, status]) // Evita múltiplos serviços pendentes
+}
+
+model Comments {
+  id         String  @id @default(uuid())
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String
+  service    Service @relation(fields: [service_id], references: [id])
+  service_id String
+  comment    String
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@map("comments")
+}
+
+model Rating {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  service    Service  @relation(fields: [service_id], references: [id])
+  service_id String
+  rating     Decimal  @db.Decimal(2,1) // Garante nota de 1.0 a 5.0
+  createdAt DateTime   @default(now()) @map("created_at")
+
+
+  @@map("ratings")
+
+}
+
+enum Role {
+  USER   // Cliente
+  ADMIN  // Você
+}
+
+enum ServiceStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
 }
