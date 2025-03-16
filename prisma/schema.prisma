@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Ou "mysql", dependendo do seu banco
+  provider = "postgresql" 
   url      = env("DATABASE_URL")
 }
 
@@ -65,7 +65,7 @@ model Service {
   ratings       Rating[]
 
   @@map("services")
-  @@unique([user_id, freelancer_id, status]) // Evita múltiplos serviços pendentes
+  @@unique([user_id, freelancer_id, status]) 
 }
 
 model Comments {
@@ -86,7 +86,7 @@ model Rating {
   user_id    String
   service    Service  @relation(fields: [service_id], references: [id])
   service_id String
-  rating     Decimal  @db.Decimal(2,1) // Garante nota de 1.0 a 5.0
+  rating     Decimal  @db.Decimal(2,1)
   createdAt DateTime   @default(now()) @map("created_at")
 
 
@@ -95,8 +95,8 @@ model Rating {
 }
 
 enum Role {
-  USER   // Cliente
-  ADMIN  // Você
+  USER  
+  ADMIN  
 }
 
 enum ServiceStatus {
