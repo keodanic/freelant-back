@@ -1,7 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+  Query,
+  Req,
+  Patch
+} from '@nestjs/common';
 import { FreelancersService } from './freelancers.service';
-import { CreateFreelancerDto } from './dto/create-freelancer.dto';
-import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
+import { CreateFreelancerDto, UpdateFreelancerDto } from './dto/create-freelancer.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
+
 
 @Controller('freelancers')
 export class FreelancersController {
@@ -13,22 +33,22 @@ export class FreelancersController {
   }
 
   @Get()
-  findAll() {
-    return this.freelancersService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.freelancersService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.freelancersService.findOne(+id);
+  @Get()
+  findOne(@Req() freelancerId: Request) {
+    return this.freelancersService.findOne(freelancerId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFreelancerDto: UpdateFreelancerDto) {
-    return this.freelancersService.update(+id, updateFreelancerDto);
+  @Put(':id')
+  update(@Req() freelancerId: Request, @Body() updateFreelancerDto: UpdateFreelancerDto) {
+    return this.freelancersService.update(freelancerId, updateFreelancerDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.freelancersService.remove(+id);
+    return this.freelancersService.remove(id);
   }
 }

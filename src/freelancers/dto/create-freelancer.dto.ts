@@ -31,3 +31,11 @@ export class CreateFreelancerDto {
   @IsString()
   work_id: string;
 }
+
+export class UpdateFreelancerDto {
+    name: string;
+    address: string;
+    password: string;
+    phone_number: string;
+    link_portfolio?: string;
+}
