@@ -33,9 +33,11 @@ export class FreelancersController {
   }
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.freelancersService.findAll(paginationDto);
+  findAll() {
+    return this.freelancersService.findAll(); 
   }
+  
+  
 
   @Get()
   findOne(@Req() freelancerId: Request) {
@@ -43,9 +45,10 @@ export class FreelancersController {
   }
 
   @Put(':id')
-  update(@Req() freelancerId: Request, @Body() updateFreelancerDto: UpdateFreelancerDto) {
-    return this.freelancersService.update(freelancerId, updateFreelancerDto);
-  }
+update(@Req() freelancerId: Request, @Body() updateFreelancerDto: UpdateFreelancerDto) {
+  return this.freelancersService.update(freelancerId, updateFreelancerDto);
+}
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

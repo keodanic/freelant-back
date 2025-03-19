@@ -68,13 +68,10 @@ export class FreelancersService {
     return freelancer;
   }
 
-  async findAll(paginationDto:PaginationDto) {
-    const {page,pageSize}= paginationDto
-    const offSet= (page-1) * pageSize
+  async findAll() {
+  
+    const freelancers=await this.prisma.freelancer.findMany({ 
 
-    const freelancers=await this.prisma.freelancer.findMany({
-      skip: offSet,
-      take: pageSize,
       select: {
         id: true,
         email: true,
@@ -84,11 +81,10 @@ export class FreelancersService {
       },
       orderBy: { id: 'desc' },
     })
-    if (!freelancers)
-      throw new HttpException(
-        'Erro ao listar usuários',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!freelancers){
+      throw new HttpException('Erro ao listar usuários',HttpStatus.BAD_REQUEST);
+    }
+    return freelancers
   }
 
   async findOne(req: Request,) {
@@ -114,10 +110,12 @@ export class FreelancersService {
   async update(freelancerId: Request, body: UpdateFreelancerDto) {
     const id = freelancerId.params.id;
 
-    const findFreelancer = await this.prisma.user.findUnique({ where: {id} });
+    const findFreelancer = await this.prisma.freelancer.findUnique({ where: {id} });
 
-    if (!findFreelancer)
-      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+    if (!findFreelancer){
+      console.log(id)
+      throw new HttpException('Freelancer não encontrado', HttpStatus.NOT_FOUND);
+    }
 
      const RandomSalt = randomInt(10, 16);
     const hashPassword = await bcrypt.hash(body.password, RandomSalt);
