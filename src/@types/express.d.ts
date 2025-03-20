@@ -7,5 +7,9 @@ declare module 'express' {
         id: string;
         email: string;
       };
+      user?:{
+        id:string;
+        email:string;
+      }
     }
   }

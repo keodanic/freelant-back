@@ -12,7 +12,7 @@ CREATE TABLE "users" (
     "date_birth" TIMESTAMP(3) NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "role" "Role" NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
     "phone_number" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -84,6 +84,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "freelancers_email_key" ON "freelancers"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "work_categories_name_key" ON "work_categories"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "services_user_id_freelancer_id_status_key" ON "services"("user_id", "freelancer_id", "status");
