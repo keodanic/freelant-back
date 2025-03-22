@@ -59,7 +59,8 @@ export class UserService {
         id: true,
         name:true,
         email: true,
-        password: true
+        password: true,
+        role: true
       }
     });
 
@@ -91,7 +92,7 @@ export class UserService {
 
   async findOne(req: Request,) {
     if (!req.user) {
-      throw new HttpException('Freelancer não encontrado', HttpStatus.NOT_FOUND);
+      throw new HttpException('Usuario não encontrado', HttpStatus.NOT_FOUND);
     }
 
    const user= await this.prisma.user.findUnique({
@@ -116,7 +117,7 @@ export class UserService {
 
     if (!findUser){
       console.log(id)
-      throw new HttpException('Freelancer não encontrado', HttpStatus.NOT_FOUND);
+      throw new HttpException('Usuario não encontrado', HttpStatus.NOT_FOUND);
     }
 
      const RandomSalt = randomInt(10, 16);
