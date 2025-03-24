@@ -9,10 +9,13 @@ import { AuthUserService } from './auth/auth-user/authUser.service';
 import { AuthUserModule } from './auth/auth-user/authUser.module';
 import { UserService } from './modules/user/user.service';
 import { PrismaService } from './database/prisma.service';
+import { AuthFreelaController } from './auth/auth-freela/authFreela.controller';
+import { AuthFreelaService } from './auth/auth-freela/authFreela.service';
+import { FreelancersService } from './modules/freelancers/freelancers.service';
 
 @Module({
   imports: [FreelancersModule, WorkModule, UserModule, AuthUserModule],
-  controllers: [AppController, AuthUserController],
-  providers: [AppService, AuthUserService,UserService,PrismaService],
+  controllers: [AppController, AuthUserController,AuthFreelaController],
+  providers: [AppService, AuthUserService,UserService,AuthFreelaService, FreelancersService,PrismaService],
 })
 export class AppModule {}
