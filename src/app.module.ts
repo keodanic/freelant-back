@@ -14,6 +14,7 @@ import { AuthFreelaService } from './auth/auth-freela/authFreela.service';
 import { FreelancersService } from './modules/freelancers/freelancers.service';
 import { ChatModule } from './modules/chat/chat.module';
 
+
 @Module({
   imports: [FreelancersModule, WorkModule, UserModule, AuthUserModule, ChatModule],
   controllers: [AppController, AuthUserController,AuthFreelaController],
