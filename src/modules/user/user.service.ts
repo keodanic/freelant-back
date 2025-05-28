@@ -130,6 +130,7 @@ export class UserService {
         password: hashPassword,
         address:body.address,
         phone_number:body.phone_number,
+        profile_picture: body.profile_picture,
         
       },
       select: {

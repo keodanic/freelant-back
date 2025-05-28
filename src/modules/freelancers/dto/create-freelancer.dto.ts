@@ -38,4 +38,5 @@ export class UpdateFreelancerDto {
     password: string;
     phone_number: string;
     link_portfolio?: string;
+    profile_picture?: string;
 }

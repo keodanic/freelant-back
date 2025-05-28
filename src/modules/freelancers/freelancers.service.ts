@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFreelancerDto,UpdateFreelancerDto } from './dto/create-freelancer.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import * as bcrypt from 'bcryptjs';
@@ -127,7 +127,8 @@ export class FreelancersService {
         password: hashPassword,
         address:body.address,
         phone_number:body.phone_number,
-        link_portfolio:body.link_portfolio
+        link_portfolio:body.link_portfolio,
+        profile_picture: body.profile_picture
       },
       select: {
         id: true,
@@ -142,6 +143,55 @@ export class FreelancersService {
 
     return updateFreelancer;
   }
+
+  async getProfile(id: string) {
+  const freelancer = await this.prisma.freelancer.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      link_portfolio: true,
+      services: {
+        include: {
+          comments: {
+            select: {
+              comment: true,
+              user: {
+                select: { name: true }
+              }
+            }
+          },
+          ratings: true
+        }
+      }
+    }
+  });
+
+  if (!freelancer) throw new NotFoundException("Freelancer não encontrado");
+
+  // Calcular média das notas
+  const allRatings = freelancer.services.flatMap(service => service.ratings);
+  const average =
+    allRatings.length > 0
+      ? allRatings.reduce((acc, r) => acc + Number(r.rating), 0) / allRatings.length
+      : 0;
+
+  // Coletar comentários
+  const comments = freelancer.services.flatMap(service =>
+    service.comments.map(comment => ({
+      comment: comment.comment,
+      author: comment.user.name
+    }))
+  );
+
+  return {
+    name: freelancer.name,
+    link_portfolio: freelancer.link_portfolio,
+    average_rating: Number(average.toFixed(1)),
+    comments
+  };
+}
+
 
   async remove(id: string) {
     const findFreelancer = await this.prisma.freelancer.findUnique({ where: { id } });

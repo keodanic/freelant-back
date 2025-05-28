@@ -40,5 +40,5 @@ export class UpdateUserDto {
     address: string;
     password: string;
     phone_number: string;
-    
+    profile_picture?: string;
 }
