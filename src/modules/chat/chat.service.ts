@@ -20,4 +20,41 @@ export class ChatService {
       orderBy: { createdAt: 'asc' },
     });
   }
+
+  async getUserChats(userId: string) {
+    const messages = await this.prisma.message.findMany({
+      where: {
+        OR: [
+          { senderId: userId },
+          { receiverId: userId },
+        ],
+      },
+      distinct: ['receiverId'],
+      orderBy: { createdAt: 'desc' },
+      include: {
+        sender: true,
+        receiver: true,
+      },
+    });
+
+    // Agrupa por outro usuário, removendo duplicatas
+    const chatList = Array.from(
+      new Map(
+        messages.map((msg) => {
+          const otherUser = msg.senderId === userId ? msg.receiver : msg.sender;
+          return [
+            otherUser.id,
+            {
+              id: msg.id,
+              receiverId: otherUser.id,
+              userName: otherUser.name,
+              profile_picture: otherUser.profile_picture,
+            },
+          ];
+        }),
+      ).values(),
+    );
+
+    return chatList;
+  }
 }
