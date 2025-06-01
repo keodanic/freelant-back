@@ -39,15 +39,15 @@ export class FreelancersController {
   
   
 
-  @Get()
-  findOne(@Req() freelancerId: Request) {
-    return this.freelancersService.findOne(freelancerId);
+ @Get('profile/:id')                     
+  getProfile(@Param('id') id: string) {
+    return this.freelancersService.getProfile(id);
   }
 
-  @Put(':id')
-update(@Req() freelancerId: Request, @Body() updateFreelancerDto: UpdateFreelancerDto) {
-  return this.freelancersService.update(freelancerId, updateFreelancerDto);
-}
+ @Put(':id')
+  update(@Param('id') id: string, @Body() updateFreelancerDto: UpdateFreelancerDto) {
+    return this.freelancersService.update({ params: { id } } as any, updateFreelancerDto);
+  }
 
 
   @Delete(':id')
