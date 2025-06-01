@@ -145,52 +145,90 @@ export class FreelancersService {
   }
 
   async getProfile(id: string) {
-  const freelancer = await this.prisma.freelancer.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      name: true,
-      link_portfolio: true,
-      services: {
-        include: {
-          comments: {
-            select: {
-              comment: true,
-              user: {
-                select: { name: true }
-              }
-            }
+    // 1) Buscamos o freelancer e todas as relações necessárias:
+    const freelancer = await this.prisma.freelancer.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        profile_picture: true,
+        work_id: true,
+        workCategory: {
+          select: { name: true },
+        },
+        link_portfolio: true,
+        phone_number: true,
+        // Trazemos os serviços com comentários (incluindo o usuário que comentou)
+        services: {
+          select: {
+            comments: {
+              select: {
+                comment: true,
+                createdAt: true,
+                // Aqui incluímos o usuário que fez o comentário
+                user: {
+                  select: { name: true },
+                },
+              },
+            },
+            ratings: {
+              select: {
+                rating: true,
+              },
+            },
+            status: true,
           },
-          ratings: true
-        }
-      }
+        },
+      },
+    });
+
+    if (!freelancer) {
+      throw new NotFoundException('Freelancer não encontrado');
     }
-  });
 
-  if (!freelancer) throw new NotFoundException("Freelancer não encontrado");
+    // 2) Calcula a média de todas as notas vindas de todos os serviços
+    const allRatings = freelancer.services.flatMap((service) =>
+      service.ratings.map((r) => Number(r.rating))
+    );
+    const average_rating =
+      allRatings.length > 0
+        ? allRatings.reduce((acc, cur) => acc + cur, 0) / allRatings.length
+        : 0;
 
-  // Calcular média das notas
-  const allRatings = freelancer.services.flatMap(service => service.ratings);
-  const average =
-    allRatings.length > 0
-      ? allRatings.reduce((acc, r) => acc + Number(r.rating), 0) / allRatings.length
-      : 0;
+    // 3) Extrai e formata os comentários
+    //    Cada comentário agora tem: { comment: string, user: { name: string }, createdAt }
+    //    Vamos transformar em [{ author: string, comment: string }]
+    const comments = freelancer.services.flatMap((service) =>
+      service.comments.map((c) => ({
+        author: c.user.name,
+        comment: c.comment,
+      }))
+    );
 
-  // Coletar comentários
-  const comments = freelancer.services.flatMap(service =>
-    service.comments.map(comment => ({
-      comment: comment.comment,
-      author: comment.user.name
-    }))
-  );
+    // 4) Contamos quantos serviços (por exemplo, COMPLETED) esse freelancer já teve.
+    //    Ajuste esse filtro de status caso queira contar todos os status ou outro critério.
+    const totalServices = await this.prisma.service.count({
+      where: {
+        freelancer_id: id,
+        status: 'COMPLETED',
+      },
+    });
 
-  return {
-    name: freelancer.name,
-    link_portfolio: freelancer.link_portfolio,
-    average_rating: Number(average.toFixed(1)),
-    comments
-  };
-}
+    // 5) Montamos o objeto final que será retornado ao controller
+    return {
+      id: freelancer.id,
+      name: freelancer.name,
+      profile_picture: freelancer.profile_picture,
+      workCategory: freelancer.workCategory, // { name: string }
+      totalServices,
+      link_portfolio: freelancer.link_portfolio,
+      phone_number: freelancer.phone_number,
+      average_rating: Number(average_rating.toFixed(1)),
+      comments, // [{ author: string, comment: string }, ...]
+    };
+  }
+
+
 
 
   async remove(id: string) {
