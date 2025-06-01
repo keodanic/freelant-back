@@ -29,8 +29,8 @@ model User {
   comments     Comments[]
   ratings      Rating[]
 
-   sentMessages     Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+  sentAsUser      Message[]    @relation("SentByUser")
+   receivedAsUser  Message[]    @relation("ReceivedByUser")
  
  
   @@map("users")
@@ -51,6 +51,9 @@ model Freelancer {
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
   services       Service[]     @relation("FreelancerServices")
+
+  sentAsFreela    Message[]    @relation("SentByFreela")
+  receivedAsFreela Message[]   @relation("ReceivedByFreela")
 
   @@map("freelancers")
 }
@@ -106,14 +109,21 @@ model Rating {
 }
 
 model Message {
-  id          String   @id @default(uuid())
-  content     String
-  senderId    String
-  receiverId  String
-  createdAt   DateTime @default(now())
+  id               String       @id @default(uuid())
+  content          String
+  createdAt        DateTime     @default(now())
 
-  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
-  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  
+  senderUserId     String?      
+  senderFreelaId   String?     
+  receiverUserId   String?      
+  receiverFreelaId String?      
+
+ 
+  senderUser       User?        @relation("SentByUser", fields: [senderUserId], references: [id])
+  senderFreela     Freelancer?  @relation("SentByFreela", fields: [senderFreelaId], references: [id])
+  receiverUser     User?        @relation("ReceivedByUser", fields: [receiverUserId], references: [id])
+  receiverFreela   Freelancer?  @relation("ReceivedByFreela", fields: [receiverFreelaId], references: [id])
 
   @@map("messages")
 }
