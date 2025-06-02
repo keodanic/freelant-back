@@ -57,6 +57,15 @@ export class ServicesController {
     }
   }
 
+  @Get(":userId/completed-pending-rating")
+  async getCompletedPendingRating(@Param("userId") userId: string) {
+    const list = await this.servicesService.findCompletedPendingRating(userId);
+    if (!list) {
+      throw new NotFoundException("Usuário não encontrado ou sem serviços concluídos.");
+    }
+    return list;
+  }
+
   
   @Patch(':id/complete')
   async completeService(@Param('id') id: string) {

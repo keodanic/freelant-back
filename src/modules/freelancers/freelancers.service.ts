@@ -68,6 +68,42 @@ export class FreelancersService {
     return freelancer;
   }
 
+  async findAllbyWork(workId?: string) {
+    let freelancers;
+    if (workId) {
+      freelancers = await this.prisma.freelancer.findMany({
+        where: {
+          work_id: workId,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          workCategory: true,
+          profile_picture: true,
+          // se quiser incluir ratings/avg, inclua aqui
+        },
+        orderBy: { id: 'desc' },
+      });
+    } else {
+      freelancers = await this.prisma.freelancer.findMany({
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          workCategory: true,
+          profile_picture: true,
+        },
+        orderBy: { id: 'desc' },
+      });
+    }
+
+    if (!freelancers) {
+      throw new HttpException('Erro ao listar freelancers', HttpStatus.BAD_REQUEST);
+    }
+    return freelancers;
+  }
+
   async findAll() {
   
     const freelancers=await this.prisma.freelancer.findMany({ 
@@ -142,6 +178,44 @@ export class FreelancersService {
     });
 
     return updateFreelancer;
+  }
+
+  async findServicesByFreelancer(freelancerId: string) {
+    // 1) Verifica se o freelancer existe
+    const freela = await this.prisma.freelancer.findUnique({
+      where: { id: freelancerId },
+    });
+    if (!freela) {
+      throw new NotFoundException("Freelancer não encontrado.");
+    }
+
+    // 2) Busca todos os serviços que tenham esse freelancer_id,
+    //    e inclui informações do usuário (cliente).
+    const services = await this.prisma.service.findMany({
+      where: {
+        freelancer_id: freelancerId,
+      },
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    // 3) Normaliza para retornar apenas o que o front precisa:
+    //    { id: string, clientId: string, clientName: string, status: ServiceStatus }
+    const result = services.map((s) => ({
+      id: s.id,
+      clientId: s.user.id,
+      clientName: s.user.name,
+      status: s.status,
+    }));
+
+    return result;
   }
 
   async getProfile(id: string) {

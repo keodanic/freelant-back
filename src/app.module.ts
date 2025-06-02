@@ -13,10 +13,13 @@ import { AuthFreelaController } from './auth/auth-freela/authFreela.controller';
 import { AuthFreelaService } from './auth/auth-freela/authFreela.service';
 import { FreelancersService } from './modules/freelancers/freelancers.service';
 import { ChatModule } from './modules/chat/chat.module';
+import { ServicesModule } from './modules/services/services.modules';
+import { RatingModule } from './modules/rating/rating.module';
 
 
 @Module({
-  imports: [FreelancersModule, WorkModule, UserModule, AuthUserModule, ChatModule],
+  imports: [FreelancersModule, WorkModule, UserModule, AuthUserModule, ChatModule,ServicesModule,   
+    RatingModule],
   controllers: [AppController, AuthUserController,AuthFreelaController],
   providers: [AppService, AuthUserService,UserService,AuthFreelaService, FreelancersService,PrismaService],
 })

@@ -9,7 +9,9 @@ import {
   UseGuards,
   Query,
   Req,
-  Patch
+  Patch,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
 import { FreelancersService } from './freelancers.service';
 import { CreateFreelancerDto, UpdateFreelancerDto } from './dto/create-freelancer.dto';
@@ -36,8 +38,21 @@ export class FreelancersController {
   findAll() {
     return this.freelancersService.findAll(); 
   }
+
+  @Get("work")
+  findAllbyWork(@Query('workId') workId?: string) {
+    return this.freelancersService.findAllbyWork(workId);
+  }
   
-  
+  @Get(":id/services")
+  async getServicesByFreelancer(@Param("id") freelancerId: string) {
+    try {
+      return await this.freelancersService.findServicesByFreelancer(freelancerId);
+    } catch (err) {
+      // Se freelancer não existir, devolve 404
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+    }
+  }
 
  @Get('profile/:id')                     
   getProfile(@Param('id') id: string) {

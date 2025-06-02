@@ -118,6 +118,46 @@ export class ServicesService {
     return updated;
   }
 
+  async findCompletedPendingRating(userId: string) {
+  
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException("Usuário não encontrado.");
+
+   
+    const completed = await this.prisma.service.findMany({
+      where: {
+        user_id: userId,
+        status: "COMPLETED",
+        
+        NOT: {
+          ratings: {
+            some: {
+              user_id: userId,
+            },
+          },
+        },
+      },
+      include: {
+        freelancer: {
+          select: {
+            id: true,
+            name: true,
+            profile_picture: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+   
+    return completed.map((s) => ({
+      serviceId: s.id,
+      freelancerId: s.freelancer.id,
+      freelancerName: s.freelancer.name,
+      freelancerAvatar: s.freelancer.profile_picture,
+    }));
+  }
+
   
   async markAsCompleted(id: string) {
    
