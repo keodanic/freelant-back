@@ -1,3 +1,4 @@
+
 # Freelant - Backend
 
 <p align="center">
@@ -8,9 +9,9 @@
 
 ## Descrição do Projeto
 
-[cite_start]O **Freelant** é uma plataforma digital desenvolvida como Trabalho de Conclusão de Curso (TCC) com o objetivo de resolver o desafio que muitos trabalhadores autônomos em Timon/MA enfrentam para encontrar clientes e a falta de canais de divulgação eficientes[cite: 40]. [cite_start]A pesquisa inicial revelou que **83,3%** dos entrevistados já perderam oportunidades por não conseguirem divulgar seus serviços adequadamente, e **66,7%** ainda dependem do "boca a boca" como principal forma de captação de clientes[cite: 42, 636].
+O **Freelant** é uma plataforma digital desenvolvida como Trabalho de Conclusão de Curso (TCC) com o objetivo de resolver o desafio que muitos trabalhadores autônomos em Timon/MA enfrentam para encontrar clientes e a falta de canais de divulgação eficientes. A pesquisa inicial revelou que **83,3%** dos entrevistados já perderam oportunidades por não conseguirem divulgar seus serviços adequadamente, e **66,7%** ainda dependem do "boca a boca" como principal forma de captação de clientes.
 
-[cite_start]A proposta do Freelant é digitalizar os perfis profissionais, ampliando a visibilidade dos prestadores de serviço e facilitando a conexão com clientes locais, contribuindo assim para o fortalecimento da economia em Timon/MA[cite: 41, 46, 68].
+A proposta do Freelant é digitalizar os perfis profissionais, ampliando a visibilidade dos prestadores de serviço e facilitando a conexão com clientes locais, contribuindo assim para o fortalecimento da economia em Timon/MA.
 
 ## Funcionalidades Principais
 
@@ -18,7 +19,7 @@ O backend do Freelant suporta as seguintes funcionalidades essenciais:
 
 * **Autenticação e Autorização**: Sistema de login com JSON Web Tokens (JWT) para usuários e freelancers, garantindo acesso seguro e diferenciado por papéis (usuário comum, freelancer e administrador).
 * **Gestão de Usuários e Freelancers**: Permite o cadastro e atualização de perfis para clientes e trabalhadores autônomos.
-* [cite_start]**Busca e Filtragem de Serviços/Profissionais**: Os usuários podem buscar freelancers por nome, profissão e localização[cite: 296].
+* **Busca e Filtragem de Serviços/Profissionais**: Os usuários podem buscar freelancers por nome, profissão e localização.
 * **Perfis Detalhados de Freelancers**: Exibição de informações completas do profissional, incluindo categoria de trabalho, portfólio (link externo), telefone e uma média de avaliações e comentários.
 * **Sistema de Chat em Tempo Real**: Comunicação direta entre clientes e freelancers, com mensagens em tempo real através de WebSockets.
 * **Gestão de Serviços**: Permite solicitar, confirmar e marcar serviços como concluídos. Inclui listagem de serviços por status.
@@ -27,13 +28,13 @@ O backend do Freelant suporta as seguintes funcionalidades essenciais:
 
 ## Tecnologias Utilizadas
 
-* [cite_start]**Framework**: [NestJS](https://nestjs.com/) [cite: 44, 87, 565]
-* [cite_start]**Linguagem**: [TypeScript](https://www.typescriptlang.org/) [cite: 565]
-* [cite_start]**Banco de Dados**: [PostgreSQL](https://www.postgresql.org/) [cite: 87, 569]
-* [cite_start]**ORM**: [Prisma](https://www.prisma.io/) [cite: 87, 569]
-* [cite_start]**Autenticação**: JSON Web Tokens (JWT) [cite: 568]
-* [cite_start]**Criptografia de Senhas**: [bcryptjs](https://github.com/kelektiv/node.bcrypt.js/) [cite: 573]
-* [cite_start]**Comunicação em Tempo Real**: [WebSockets](https://developer.mozilla.org/pt-BR/docs/Web/API/WebSockets_API) [cite: 573]
+* **Framework**: [NestJS](https://nestjs.com/)
+* **Linguagem**: [TypeScript](https://www.typescriptlang.org/)
+* **Banco de Dados**: [PostgreSQL](https://www.postgresql.org/)
+* **ORM**: [Prisma](https://www.prisma.io/)
+* **Autenticação**: JSON Web Tokens (JWT)
+* **Criptografia de Senhas**: [bcryptjs](https://github.com/kelektiv/node.bcrypt.js/)
+* **Comunicação em Tempo Real**: [WebSockets](https://developer.mozilla.org/pt-BR/docs/Web/API/WebSockets_API)
 
 ## Configuração do Ambiente
 
@@ -44,7 +45,7 @@ O backend do Freelant suporta as seguintes funcionalidades essenciais:
 
 2.  **Clone o repositório**:
     ```bash
-    git clone [URL_DO_SEU_REPOSITORIO_AQUI]
+    git clone [https://github.com/keodanic/freelant-back.git](https://github.com/keodanic/freelant-back.git)
     cd freelant-back
     ```
 
