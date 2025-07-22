@@ -319,26 +319,4 @@ export class FreelancersService {
     };
   }
 
-  async getAverageRating(freelancerId: string) {
-    const freelancer = await this.prisma.freelancer.findUnique({
-      where: { id: freelancerId },
-    });
-
-    if (!freelancer) {
-      throw new NotFoundException('Freelancer não encontrado.');
-    }
-
-    const aggregate = await this.prisma.rating.aggregate({
-      where: {
-        service: {
-          freelancer_id: freelancerId,
-        },
-      },
-      _avg: {
-        rating: true, // Confirme que 'rating' é o nome da coluna da nota no seu BD
-      },
-    });
-
-    return aggregate._avg.rating || 0;
-  }
 }

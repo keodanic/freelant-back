@@ -138,27 +138,4 @@ export class RatingService {
     return fullList;
   }
 
-  async getAverageRating(freelancerId: string) {
-    const freelancer = await this.prisma.freelancer.findUnique({
-      where: { id: freelancerId },
-    });
-
-    if (!freelancer) {
-      throw new NotFoundException('Freelancer não encontrado.');
-    }
-
-    const aggregate = await this.prisma.rating.aggregate({
-      where: {
-        service: {
-          freelancer_id: freelancerId,
-        },
-      },
-      _avg: {
-        // 'rating' deve ser o nome da sua coluna de nota na tabela Rating
-        rating: true, 
-      },
-    });
-
-    return aggregate._avg.rating || 0;
-  }
 }

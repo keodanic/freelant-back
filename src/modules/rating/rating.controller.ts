@@ -14,9 +14,7 @@ import { FreelancersService } from '../freelancers/freelancers.service';
 
 @Controller('ratings')
 export class RatingController {
-  constructor(private readonly ratingService: RatingService,
-    private readonly freelancersService: FreelancersService
-  ) {}
+  constructor(private readonly ratingService: RatingService) {}
 
   /**
    * POST /ratings
@@ -47,18 +45,4 @@ export class RatingController {
     }
   }
 
-  // Adicione esta rota dentro da classe FreelancersController
-
-  @Get(':id/average-rating')
-  async getAverageRating(@Param('id') id: string) {
-    try {
-      const average = await this.freelancersService.getAverageRating(id);
-      return { average }; // Retorna exatamente no formato { average: number }
-    } catch (err) {
-      if (err instanceof NotFoundException) {
-        throw new HttpException(err.message, HttpStatus.NOT_FOUND);
-      }
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
 }
